@@ -3,15 +3,20 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../db');
-const SECRET_KEY = 'WORKINDIA_TEST';
+const SECRET_KEY = 'your_secret_key';
 
 // Register
 router.post('/signup', (req, res) => {
-    const { username, password, email } = req.body;
+    const { username, password, email, role } = req.body;
+
+    if (!['user', 'admin'].includes(role)) {
+        return res.status(400).json({ status: 'Invalid role provided', status_code: 400 });
+    }
+
     const hashedPassword = bcrypt.hashSync(password, 8);
 
-    const query = `INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, 'admin')`;
-    db.run(query, [username, hashedPassword, email], function(err) {
+    const query = `INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?)`;
+    db.run(query, [username, hashedPassword, email, role], function(err) {
         if (err) {
             return res.status(400).json({ status: 'Username already exists', status_code: 400 });
         }

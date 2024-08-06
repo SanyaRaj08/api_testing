@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const SECRET_KEY = 'WORKINDIA_TEST';
+const SECRET_KEY = 'your_secret_key';
 
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
